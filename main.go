@@ -81,6 +81,34 @@ func main() {
 		fmt.Fprintf(w, `{"username":%q,"age":%d,"received_at":%q}`, username, age, time.Now().Format(time.RFC3339))
 	})
 
+	// GET /locations → data GIS CTH
+	http.HandleFunc("/locations", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
+		w.Header().Set("Content-Type", "application/json")
+
+		data := []map[string]interface{}{
+			{
+				"name": "Lokasi A",
+				"lat":  -6.914744,
+				"lng":  107.60981,
+				"info": "Data GIS dari Lemes",
+			},
+			{
+				"name": "Lokasi B",
+				"lat":  -6.917464,
+				"lng":  107.619123,
+				"info": "Data GIS dari Lemes",
+			},
+		}
+
+		json.NewEncoder(w).Encode(data)
+	})
+
 	addr := ":8080"
 	log.Println("Server jalan di http://localhost" + addr)
 	log.Fatal(http.ListenAndServe(addr, nil))
